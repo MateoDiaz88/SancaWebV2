@@ -1,0 +1,53 @@
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(244, 241, 234, 0.88);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.spinner-ring {
+    width: 52px;
+    height: 52px;
+
+    border: 4px solid rgba(138, 154, 91, 0.22);
+    border-top-color: #3B5233;
+    border-right-color: #8A9A5B;
+    border-radius: 50%;
+
+    animation: spinner-rotate 0.8s linear infinite;
+}
+
+.loading-content p {
+    margin: 0;
+    color: #3B5233;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+@keyframes spinner-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner-ring {
+        animation-duration: 2s;
+    }
+}

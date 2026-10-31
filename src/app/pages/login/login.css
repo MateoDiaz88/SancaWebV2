@@ -1,0 +1,149 @@
+:host {
+    --borravino: #5e1f33;
+    --borravino-claro: #7d2c46;
+    --borravino-oscuro: #3f1322;
+}
+
+
+
+.login-page {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: linear-gradient(135deg, #faf3ee, #f1e4dc);
+    padding-top: 70px;
+    font-family: 'Poppins', sans-serif; 
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 32px;
+    border-radius: 24px;
+    color: #fff;
+    text-align: center;
+    background: var(--borravino);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.logo {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    margin-bottom: 12px;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.subtitle {
+    margin: 4px 0 24px;
+    opacity: .9;
+}
+
+.sa {
+    color: #7a3b7a;
+}
+
+.ca {
+    color: #000;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+
+label {
+    font-size: .85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, .9);
+    font-size: 1rem;
+
+    &:focus {
+        outline: 2px solid #f0c9d4;
+    }
+}
+
+.password {
+    position: relative;
+}
+
+.password button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: 0;
+    color: #555;
+    cursor: pointer;
+    font-size: .8rem;
+}
+
+.forgot {
+    font-size: .8rem;
+    color: #fff;
+    opacity: .85;
+    align-self: flex-end;
+}
+
+.submit {
+    padding: 12px;
+    border: 0;
+    border-radius: 12px;
+    background: #fff;
+    color: var(--borravino);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform .15s, background .15s;
+
+    &:hover:not(:disabled) {
+        background: #f6e6ec;
+    }
+
+    &:disabled {
+        opacity: .5;
+        cursor: not-allowed;
+    }
+}
+
+.back {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: .85rem;
+    color: #fff;
+    opacity: .8;
+}
+
+
+.forgot,
+.back {
+    color: #f3d9e1;
+}
+
+.btn-show-pass {
+    display: flex;
+    align-items: center;
+}
+
+.btn-show-pass svg {
+    color: #5e1f33;
+}

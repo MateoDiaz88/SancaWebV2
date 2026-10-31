@@ -1,0 +1,102 @@
+<header class="page-head">
+    <div>
+        <h1>Cuotas</h1>
+        <p>Controlá los pagos de cada protagonista, de marzo a diciembre.</p>
+    </div>
+    <select class="select-anio" [value]="anio()" (change)="anio.set(+$any($event.target).value)">
+        @for (a of anios; track a) { <option [value]="a">{{ a }}</option> }
+    </select>
+</header>
+
+<section class="stats">
+    <article class="stat"><span>Protagonistas</span><strong>{{ total() }}</strong></article>
+    <article class="stat"><span>Al día</span><strong class="ok">{{ alDia() }}</strong></article>
+    <article class="stat"><span>Con deuda</span><strong class="mal">{{ conDeuda() }}</strong></article>
+</section>
+
+<section class="card">
+    <div class="filtros">
+        <input class="buscar" placeholder="Buscar por nombre o DNI" (input)="busqueda.set($any($event.target).value)" />
+
+        <select (change)="rama.set($any($event.target).value)">
+            <option value="">Todas las ramas</option>
+            <option value="manada">Manada</option>
+            <option value="unidad">Unidad</option>
+            <option value="caminantes">Caminantes</option>
+            <option value="rover">Rover</option>
+        </select>
+
+        <select (change)="estado.set($any($event.target).value)">
+            <option value="todos">Todos</option>
+            <option value="aldia">Al día</option>
+            <option value="deuda">Con deuda</option>
+        </select>
+    </div>
+
+    <div class="table-wrap">
+        @if (error()) {
+        <p class="error-banner" role="alert">{{ error() }}</p>
+        }
+
+        @if (cargando()) {
+        <p class="estado">Cargando cuotas...</p>
+        } @else {
+        <!-- tarjetas + tabla matriz como estaban -->
+        <table class="matriz">
+            <thead>
+                <tr>
+                    <th class="nombre">Protagonista</th>
+                    @for (m of meses; track m.n) { <th>{{ m.label }}</th> }
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (u of filas(); track u.id) {
+                <tr>
+                    <td class="nombre">
+                        <div class="user">
+                            <span class="avatar">{{ u.nombre[0] }}{{ u.apellido[0] }}</span>
+                            <div>
+                                {{ u.nombre }} {{ u.apellido }}
+                                <small class="rama">{{ u.rama }}</small>
+                            </div>
+                        </div>
+                    </td>
+
+                    @for (m of meses; track m.n) {
+                    <td>
+                        <button class="cuota" [class]="'cuota ' + estadoCuota(u.id, m.n)"
+                            [title]="m.label + ': ' + estadoCuota(u.id, m.n)" (click)="toggle(u.id, m.n)">
+                            @switch (estadoCuota(u.id, m.n)) {
+                            @case ('pagada') { <svg lucideCheck></svg> }
+                            @case ('debe') { <svg lucideX></svg> }
+                            @default { · }
+                            }
+                        </button>
+                    </td>
+                    }
+
+                    <td>
+                        @if (adeuda(u.id) > 0) {
+                        <span class="tag deuda">Debe {{ adeuda(u.id) }}</span>
+                        } @else {
+                        <span class="tag aldia">Al día</span>
+                        }
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td [attr.colspan]="meses.length + 2" class="empty">No hay protagonistas para mostrar.</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+
+    <div class="leyenda">
+        <span><i class="dot pagada"></i> Pagada</span>
+        <span><i class="dot debe"></i> Adeudada</span>
+        <span><i class="dot futura"></i> Todavía no vence</span>
+    </div>
+</section>

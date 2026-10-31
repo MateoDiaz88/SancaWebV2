@@ -1,0 +1,61 @@
+<section class="login-page">
+  <div class="login-card">
+    <img src="assets/img/logo.jpg" alt="Logo SanCa" class="logo" />
+    <h1>¡Hola de nuevo!</h1>
+    <p class="subtitle">Ingresá a tu cuenta de <span class="sa">Sa</span><span class="ca">nCa</span></p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label>
+        DNI
+        <input type="text" inputmode="numeric" maxlength="8" autocomplete="username" formControlName="dni"
+          placeholder="12345678" [class.invalid]="dni.invalid && dni.touched" />
+        @if (dni.touched && dni.invalid) {
+        <small class="error" role="alert">
+          @if (dni.hasError('required')) {
+          El DNI es obligatorio.
+          } @else if (dni.hasError('pattern')) {
+          Ingresá solo números, sin puntos ni espacios.
+          } @else if (dni.hasError('minlength') || dni.hasError('maxlength')) {
+          El DNI debe tener entre 7 y 8 dígitos.
+          }
+        </small>
+        }
+      </label>
+
+      <label>
+        Contraseña
+        <div class="password">
+          <input [type]="show() ? 'text' : 'password'" formControlName="password" placeholder="••••••••"
+            [class.invalid]="password.invalid && password.touched" autocomplete="current-password" />
+          <button type="button" (click)="show.set(!show())" class="btn-show-pass">
+            @if (show()) {
+            <svg lucideEye></svg>
+            } @else {
+            <svg lucideEyeClosed></svg>
+            }
+          </button>
+        </div>
+        @if (password.touched && password.invalid) {
+        <small class="error" role="alert">
+          @if (password.hasError('required')) {
+          La contraseña es obligatoria.
+          } @else if (password.hasError('minlength')) {
+          Debe tener al menos 6 caracteres.
+          }
+        </small>
+        }
+      </label>
+
+      @if (error()) {
+      <p class="error-banner" role="alert">{{ error() }}</p>
+      }
+
+      <a class="forgot" routerLink="/recuperar">¿Olvidaste tu contraseña?</a>
+      <button class="submit" type="submit" [disabled]="form.invalid">Ingresar</button>
+    </form>
+
+    <a class="back" routerLink="/">← Volver al inicio</a>
+  </div>
+
+  
+</section>

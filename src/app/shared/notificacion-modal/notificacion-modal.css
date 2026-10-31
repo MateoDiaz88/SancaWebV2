@@ -1,0 +1,153 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    background: rgba(30, 20, 25, 0.45);
+    backdrop-filter: blur(5px);
+
+    animation: aparecer .2s ease;
+}
+
+.notification-modal {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    padding: 36px 28px 28px;
+
+    text-align: center;
+    background: #fffaf8;
+    border: 1px solid rgba(113, 55, 72, 0.12);
+    border-radius: 24px;
+    box-shadow: 0 24px 70px rgba(40, 20, 30, 0.2);
+
+    animation: subir .25s ease;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 66px;
+    height: 66px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+
+    svg {
+        width: 30px;
+        height: 30px;
+        stroke-width: 2.2;
+    }
+}
+
+.success .icon-container {
+    color: #26734d;
+    background: #e2f4e9;
+}
+
+.error .icon-container {
+    color: #b42335;
+    background: #fde7e9;
+}
+
+.warning .icon-container {
+    color: #946200;
+    background: #fff0cc;
+}
+
+.info .icon-container {
+    color: #713748;
+    background: #f0e4e8;
+}
+
+.notification-modal h2 {
+    margin: 0 0 12px;
+    color: #39232c;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.notification-modal p {
+    margin: 0 0 26px;
+    color: #74656b;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.btn-confirm {
+    width: 100%;
+    padding: 13px 20px;
+
+    border: none;
+    border-radius: 12px;
+    background: var(--borravino, #713748);
+    color: #fff;
+
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: background .2s, transform .2s;
+}
+
+.btn-confirm:hover {
+    background: var(--borravino-claro, #8c5263);
+    transform: translateY(-1px);
+}
+
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #8c7a81;
+    font-size: 27px;
+    cursor: pointer;
+
+    transition: background .2s;
+}
+
+.close-btn:hover {
+    background: #f0e4e8;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes subir {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 480px) {
+    .notification-modal {
+        padding: 32px 22px 24px;
+        border-radius: 20px;
+    }
+}

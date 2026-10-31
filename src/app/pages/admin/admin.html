@@ -1,0 +1,182 @@
+<div class="admin">
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="assets/img/logo.jpg" alt="SanCa" />
+            <span>SanCa <small>Panel admin</small></span>
+        </div>
+
+        <nav>
+            <button [class.active]="seccion() === 'usuarios'" (click)="seccion.set('usuarios')">
+                <svg lucideUsers></svg> Usuarios
+            </button>
+            <button [class.active]="seccion() === 'form'" (click)="nuevo()">
+                <svg lucideUserPlus></svg> Nuevo usuario
+            </button>
+            <button [class.active]="seccion() === 'cuotas'" (click)="seccion.set('cuotas')">
+                <svg lucideWallet></svg> Cuotas
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="me">
+                <span class="avatar">A</span>
+                <div><strong>Admin</strong><small>Administrador</small></div>
+            </div>
+            <button class="logout" (click)="salir()"><svg lucideLogOut></svg>Salir</button>
+            <button class="home" (click)="irAHome()"><svg lucideHouse></svg>Inicio</button>
+        </div>
+    </aside>
+
+    <main class="content">
+        @if (seccion() === 'usuarios') {
+        <header class="page-head">
+            <div>
+                <h1>Usuarios</h1>
+                <p>Gestioná las cuentas de la comunidad.</p>
+            </div>
+            <button class="btn-primary" (click)="nuevo()">
+                <svg lucideUserPlus></svg> Nuevo usuario
+            </button>
+        </header>
+
+        <section class="stats">
+            <article class="stat"><span>Total</span><strong>{{ total() }}</strong></article>
+            <article class="stat"><span>Activos</span><strong>{{ activos() }}</strong></article>
+            <article class="stat"><span>Educadores</span><strong>{{ educadores() }}</strong></article>
+        </section>
+
+        <section class="card">
+            <div class="search">
+                <svg lucideSearch></svg>
+                <input placeholder="Buscar por nombre o DNI" [value]="busqueda()"
+                    (input)="busqueda.set($any($event.target).value)" />
+            </div>
+
+            <div class="table-wrap">
+
+                @if (cargando()) {
+                <div class="skeleton-table">
+                    @for (fila of [1, 2, 3, 4, 5]; track fila) {
+                    <div class="skeleton-row">
+                        <div class="skeleton-user">
+                            <div class="skeleton skeleton-avatar"></div>
+
+                            <div class="skeleton-user-info">
+                                <div class="skeleton skeleton-name"></div>
+                                <div class="skeleton skeleton-subtitle"></div>
+                            </div>
+                        </div>
+
+                        <div class="skeleton skeleton-dni"></div>
+                        <div class="skeleton skeleton-badge"></div>
+                        <div class="skeleton skeleton-badge"></div>
+                        <div class="skeleton skeleton-status"></div>
+
+                        <div class="skeleton-actions">
+                            <div class="skeleton skeleton-action"></div>
+                            <div class="skeleton skeleton-action"></div>
+                            <div class="skeleton skeleton-action"></div>
+                        </div>
+                    </div>
+                    }
+                </div>
+                } @else {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>DNI</th>
+                            <th>Rol</th>
+                            <th>Rama</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (u of filtrados(); track u.dni) {
+                        <tr>
+                            <td>
+                                <div class="user">
+                                    <span class="avatar">{{ iniciales(u) }}</span>
+                                    {{ u.nombre }} {{ u.apellido }}
+                                </div>
+                            </td>
+                            <td>{{ u.dni }}</td>
+                            <td><span class="badge rol-{{ u.rol }}">{{ u.rol }}</span></td>
+                            <td>
+                                @if (u.rama) { <span class="badge rama-{{ u.rama }}">{{ u.rama }}</span> }
+                                @else { <span class="muted">-</span> }
+                            </td>
+                            <td>
+                                <span class="status" [class.off]="!u.activo">
+                                    {{ u.activo ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            </td>
+                            <td class="actions">
+                                <button title="Editar" (click)="editar(u)"><svg lucidePencil></svg></button>
+                                <button title="Desactivar" class="danger" (click)="pedirDesactivar(u)"><svg
+                                        lucideBan></svg></button>
+                                <button title="Cuotas" class="bill"><svg lucideDollarSign></svg></button>
+                            </td>
+                        </tr>
+                        } @empty {
+                        <tr>
+                            <td colspan="5" class="empty">No se encontraron usuarios.</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                }
+
+
+            </div>
+        </section>
+        }
+
+        @if (seccion() === 'form') {
+        <header class="page-head">
+            <div>
+                <h1>{{ usuarioEditando() ? 'Editar usuario' : 'Registrar usuario' }}</h1>
+                <p>{{ usuarioEditando() ? "Modifique los datos de cualquier miembro del Grupo Scout." : "Ingrese los
+                    datos del próximo scout de San Cayetano."}}</p>
+            </div>
+        </header>
+
+        <app-usuario-form [usuario]="usuarioEditando()" [guardando]="guardando()" (guardar)="onGuardar($event)"
+            (cancelar)="volver()" />
+        }
+
+        @if (seccion() === 'cuotas') {
+        <app-cuotas [usuarios]="usuarios()" />
+        }
+
+    </main>
+
+    @if (usuarioADesactivar(); as u) {
+    <div class="overlay" (click)="cancelarDesactivar()">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"
+            (click)="$event.stopPropagation()">
+            <div class="modal-icon"><svg lucideBan></svg></div>
+            <h3 id="modal-title">¿Desactivar usuario?</h3>
+            <p>
+                Estás por desactivar a <strong>{{ u.nombre }} {{ u.apellido }}</strong>
+                (DNI {{ u.dni }}). Esta acción no se puede deshacer.
+            </p>
+
+            <div class="modal-actions">
+                <button class="btn-ghost" (click)="cancelarDesactivar()" [disabled]="desactivar()">
+                    Cancelar
+                </button>
+                <button class="btn-danger" (click)="confirmarDesactivar()" [disabled]="desactivar()">
+                    {{ desactivar() ? 'Desactivando...' : 'Sí, desactivar' }}
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+
+</div>

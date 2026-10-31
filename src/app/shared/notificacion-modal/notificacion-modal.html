@@ -1,0 +1,32 @@
+@if (notificaciones.notificacion(); as notif) {
+<div class="modal-overlay" (click)="notificaciones.cerrar()">
+    <section class="notification-modal" [class.success]="notif.tipo === 'success'"
+        [class.error]="notif.tipo === 'error'" [class.warning]="notif.tipo === 'warning'"
+        [class.info]="notif.tipo === 'info'" role="alertdialog" aria-modal="true" aria-labelledby="notification-title"
+        (click)="$event.stopPropagation()">
+        <button type="button" class="close-btn" aria-label="Cerrar notificación" (click)="notificaciones.cerrar()">
+            &times;
+        </button>
+
+        <div class="icon-container">
+            @if (notif.tipo === 'success') {
+            <svg lucideCheck></svg>
+            } @else if (notif.tipo === 'error') {
+            <svg lucideCircleAlert></svg>
+            } @else if (notif.tipo === 'warning') {
+            <svg lucideTriangleAlert></svg>
+            } @else {
+            <svg lucideInfo></svg>
+            }
+        </div>
+
+        <h2 id="notification-title">{{ notif.titulo }}</h2>
+
+        <p>{{ notif.mensaje }}</p>
+
+        <button type="button" class="btn-confirm" (click)="notificaciones.cerrar()">
+            {{ notif.textoBoton || 'Entendido' }}
+        </button>
+    </section>
+</div>
+}

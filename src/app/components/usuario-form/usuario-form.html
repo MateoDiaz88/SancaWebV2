@@ -1,0 +1,92 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="card form-card">
+    <div class="grid">
+        <label>DNI
+            <input formControlName="dni" inputmode="numeric" placeholder="12345678" />
+            @if (form.controls.dni.touched && form.controls.dni.invalid) {
+            <small class="error">Ingresá un DNI válido (7 u 8 dígitos).</small>
+            }
+        </label>
+
+        <label>Rol
+            <select formControlName="rol">
+                <option value="protagonista">Protagonista</option>
+                <option value="educador">Educador</option>
+                <option value="admin">Admin</option>
+            </select>
+        </label>
+
+        <label>Nombre
+            <input formControlName="nombre" />
+            @if (form.controls.nombre.touched && form.controls.nombre.invalid) {
+            <small class="error">El nombre es obligatorio.</small>
+            }
+        </label>
+
+        <label>Apellido
+            <input formControlName="apellido" />
+            @if (form.controls.apellido.touched && form.controls.apellido.invalid) {
+            <small class="error">El apellido es obligatorio.</small>
+            }
+        </label>
+
+        <label>Fecha de nacimiento
+            <input type="date" formControlName="fechaNacimiento" [max]="max" />
+            @if (form.controls.fechaNacimiento.touched && form.controls.fechaNacimiento.invalid) {
+            <small class="error">
+                @if (form.controls.fechaNacimiento.hasError('required')) { La fecha es obligatoria. }
+                @else { Ingresá una fecha válida. }
+            </small>
+            }
+        </label>
+
+        <label>Correo electrónico
+            <input type="email" formControlName="email" placeholder="nombre@correo.com" />
+            @if (form.controls.email.touched && form.controls.email.invalid) {
+            <small class="error">
+                {{ form.controls.email.hasError('required') ? 'El correo es obligatorio.' : 'Ingresá un correo válido.'
+                }}
+            </small>
+            }
+        </label>
+
+        @if (pideRama()) {
+        <label class="full">{{ labelRama() }}
+            <select formControlName="rama">
+                <option [ngValue]="null" disabled>Seleccioná una rama</option>
+                @for (r of ramas; track r.value) {
+                <option [value]="r.value">{{ r.label }}</option>
+                }
+            </select>
+            @if (form.controls.rama.touched && form.controls.rama.invalid) {
+            <small class="error">Seleccioná una rama.</small>
+            }
+        </label>
+        }
+
+        <label class="full">
+            {{ editando() ? 'Nueva contraseña (opcional)' : 'Contraseña inicial' }}
+            <input type="password" formControlName="password"
+                [placeholder]="editando() ? 'Dejá vacío para no cambiarla' : 'Mínimo 6 caracteres'" />
+            @if (form.controls.password.touched && form.controls.password.invalid) {
+            <small class="error">
+                {{ form.controls.password.hasError('required') ? 'La contraseña es obligatoria.' : 'Mínimo 6
+                caracteres.' }}
+            </small>
+            }
+        </label>
+    </div>
+
+    <div class="form-actions">
+        <button type="button" class="btn-ghost" (click)="cancelar.emit()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="guardando()">
+            @if (guardando()) {
+            <span class="spinner"></span>
+            }
+
+            {{ guardando()
+            ? 'Guardando...'
+            : (editando() ? 'Guardar cambios' : 'Registrar')
+            }}
+        </button>
+    </div>
+</form>

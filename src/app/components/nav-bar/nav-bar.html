@@ -1,0 +1,48 @@
+<nav class="nav-bar-container">
+    <div class="home">
+        <a routerLink="/">
+            <img src="assets/img/logo.jpg" alt="Logo de San Cayetano">
+        </a>
+    </div>
+
+    <div class="routes">
+        <div class="btns">
+            <a routerLink="/history">Nuestra historia</a>
+        </div>
+
+        <div class="btns">
+            <a routerLink="/contacto">Contactanos</a>
+        </div>
+
+        @if(!auth.usuarioLogueado()){
+        <div class="btns">
+            <a routerLink="/login">Soy de Sanca!</a>
+        </div>
+        }
+
+        @if (!auth.cargandoAuth()) {
+        @if (auth.usuarioLogueado()) {
+        <a routerLink="/perfil">Mi perfil</a>
+
+        @if (auth.rol() === 'protagonista') {
+        <a routerLink="/cuotas">Mis cuotas</a>
+        }
+
+        @if (auth.rol() === 'educador') {
+        <a routerLink="/educador">Mi sección</a>
+        }
+
+        @if (auth.rol() === 'admin') {
+            <div class="btns">
+                <a routerLink="/admin">Administración</a>
+            </div>
+        }
+        } @else {
+        <a routerLink="/login">Iniciar sesión</a>
+        }
+        }
+
+     
+    </div>
+
+</nav>
