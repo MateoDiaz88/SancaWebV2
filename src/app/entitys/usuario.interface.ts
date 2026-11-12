@@ -9,5 +9,6 @@ export interface Usuario {
     fechaNacimiento: string;   // 'YYYY-MM-DD'
     rol: 'protagonista' | 'educador' | 'admin';
     rama: Rama | null;
+    fechaIngreso:string ;
     activo: boolean;
 }

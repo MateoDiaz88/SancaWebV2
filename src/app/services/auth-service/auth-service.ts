@@ -13,6 +13,8 @@ export class AuthService {
 
   usuarioLogueado = signal(false);
   rol = signal<RolUsuario | null>(null);
+  rama = signal<string | null>(null);
+  idUsuario = signal<string|null>(null)
   cargandoAuth = signal(true);
 
   async login(dni: string, password: string) {
@@ -58,24 +60,30 @@ export class AuthService {
     if (error || !user?.email) {
       this.usuarioLogueado.set(false);
       this.rol.set(null);
+      this.rama.set(null)
+      this.idUsuario.set(null)
       return;
     }
 
     const { data: perfil, error: errorPerfil } =
       await this.supabase
         .from('perfiles')
-        .select('rol, activo')
+        .select('id, rol, rama,activo')
         .eq('email', user.email)
         .maybeSingle();
 
     if (errorPerfil || !perfil || !perfil.activo) {
       this.usuarioLogueado.set(false);
       this.rol.set(null);
+      this.rama.set(null)
+      this.idUsuario.set(null)
       return;
     }
 
     this.usuarioLogueado.set(true);
     this.rol.set(perfil.rol as RolUsuario);
+    this.rama.set(perfil.rama);
+    this.idUsuario.set(perfil.id)
   }
 
   async inicializarAuth() {

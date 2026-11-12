@@ -32,6 +32,7 @@
         color: var(--borravino);
     }
 }
+
 .page-head {
     display: flex;
     justify-content: space-between;
@@ -51,6 +52,7 @@
         font-size: .9rem;
     }
 }
+
 .avatar {
     display: grid;
     place-items: center;
@@ -173,6 +175,16 @@
         background: var(--crema);
         color: var(--muted);
     }
+}
+
+.cuota.sin {
+    background: transparent;
+    color: gray;
+    cursor: default;
+}
+
+.cuota.sin:hover {
+    transform: none;
 }
 
 .tag {

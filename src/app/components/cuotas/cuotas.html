@@ -65,11 +65,12 @@
 
                     @for (m of meses; track m.n) {
                     <td>
-                        <button class="cuota" [class]="'cuota ' + estadoCuota(u.id, m.n)"
+                        <button class="cuota" [class]="'cuota ' + estadoCuota(u.id, m.n)" [disabled] = "estadoCuota(u.id, m.n) === 'sin'"
                             [title]="m.label + ': ' + estadoCuota(u.id, m.n)" (click)="toggle(u.id, m.n)">
                             @switch (estadoCuota(u.id, m.n)) {
                             @case ('pagada') { <svg lucideCheck></svg> }
                             @case ('debe') { <svg lucideX></svg> }
+                            @case ('sin') { – }
                             @default { · }
                             }
                         </button>

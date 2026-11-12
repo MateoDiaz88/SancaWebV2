@@ -43,6 +43,14 @@ Deno.serve(async (req) => {
   const rama = d.rol === 'admin' ? null : d.rama;
   if (d.rol !== 'admin' && !RAMAS.includes(rama)) return responder({ error: 'Seleccioná una rama.' }, 400);
 
+  // ↓ NUEVO
+  const hoy = new Date().toISOString().split('T')[0];
+  const fechaIngreso = d.fechaIngreso || hoy;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaIngreso)) {
+    return responder({ error: 'Fecha de ingreso inválida.' }, 400);
+  }
+
+
   // 3. Crear la cuenta en Auth
   const { data: creado, error: errAuth } = await admin.auth.admin.createUser({
     email: d.email,
@@ -66,8 +74,9 @@ Deno.serve(async (req) => {
       fecha_nacimiento: d.fechaNacimiento,
       rol: d.rol,
       rama,
+      fecha_ingreso: fechaIngreso,        // ← NUEVO
     })
-    .select('id, dni, nombre, apellido, email, fecha_nacimiento, rol, rama, activo')
+    .select('id, dni, nombre, apellido, email, fecha_nacimiento, rol, rama, fecha_ingreso, activo')
     .single();
 
   if (errPerfil) {
@@ -86,6 +95,7 @@ Deno.serve(async (req) => {
     fechaNacimiento: perfil.fecha_nacimiento,
     rol: perfil.rol,
     rama: perfil.rama,
+    fechaIngreso: perfil.fecha_ingreso,
     activo: perfil.activo,
   });
 });

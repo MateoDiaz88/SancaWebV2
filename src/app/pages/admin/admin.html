@@ -16,6 +16,10 @@
                 <svg lucideWallet></svg> Cuotas
             </button>
 
+            <button [class.active]="seccion() === 'calendario'" (click)="seccion.set('calendario')">
+                <svg lucideCalendar></svg> Calendario
+            </button>
+
         </nav>
 
         <div class="sidebar-footer">
@@ -151,6 +155,10 @@
 
         @if (seccion() === 'cuotas') {
         <app-cuotas [usuarios]="usuarios()" />
+        }
+
+        @if (seccion() === 'calendario') {
+        <app-calendario />
         }
 
     </main>

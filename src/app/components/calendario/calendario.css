@@ -1,0 +1,389 @@
+.card {
+    background: #fff;
+    border: 1px solid var(--borde);
+    border-radius: 18px;
+    box-shadow: 0 4px 20px rgba(94, 31, 51, .05);
+    padding: 20px;
+}
+
+.page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+
+
+    h1 {
+        margin: 0;
+        font-size: 1.7rem;
+    }
+
+    p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: .9rem;
+    }
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--borravino);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s, transform .15s;
+
+    svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    &:hover {
+        background: var(--borravino-claro);
+        transform: translateY(-1px);
+    }
+}
+
+.btn-ghost {
+    padding: 11px 18px;
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    background: #fff;
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--crema);
+    }
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgba(30, 10, 18, 0.55);
+    backdrop-filter: blur(3px);
+    animation: fade .15s ease-out;
+}
+.modal {
+    width: 100%;
+    max-width: 420px;
+    padding: 28px;
+    border-radius: 20px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
+    animation: pop .18s ease-out;
+
+    h3 {
+        margin: 12px 0 8px;
+        font-size: 1.25rem;
+    }
+
+    p {
+        margin: 0;
+        color: var(--muted);
+        font-size: .92rem;
+        line-height: 1.5;
+    }
+
+    strong {
+        color: var(--texto);
+    }
+}
+
+
+.cal-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+    align-items: start;
+}
+
+.cal-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.cal-nav h2 {
+    flex: 1;
+    margin: 0;
+    font-size: 1.2rem;
+    text-transform: capitalize;
+}
+
+.icon-btn {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    background: var(--crema);
+}
+
+.icon-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    transition: opacity .15s;
+}
+
+.cal-grid.cargando {
+    opacity: .6;
+}
+
+.dow {
+    text-align: center;
+    font-size: .75rem;
+    color: var(--muted);
+    padding: 6px 0;
+    text-transform: uppercase;
+}
+
+.dia {
+    min-height: 96px;
+    padding: 6px;
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: stretch;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+}
+
+.dia:hover {
+    background: #fdf8f5;
+}
+
+.dia.fuera {
+    opacity: .45;
+}
+
+.dia.sel {
+    outline: 2px solid var(--borravino-claro);
+}
+
+.dia.hoy .num {
+    background: var(--borravino);
+    color: #fff;
+}
+
+.num {
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.chip {
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: .7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mas {
+    font-size: .68rem;
+    color: var(--muted);
+}
+
+/* colores por tipo */
+.chip.reunion,
+.barra.reunion {
+    background: #f3d9e1;
+    color: var(--borravino);
+}
+
+.chip.salida,
+.barra.salida {
+    background: #dff0e3;
+    color: #2d6a3a;
+}
+
+.chip.campamento,
+.barra.campamento {
+    background: #dbeefb;
+    color: #1f6fa8;
+}
+
+.chip.otro,
+.barra.otro {
+    background: #ece7e4;
+    color: #5b4f55;
+}
+
+.leyenda {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    font-size: .78rem;
+    color: var(--muted);
+}
+
+.dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    margin-right: 6px;
+    vertical-align: -1px;
+}
+
+.dot.reunion {
+    background: #f3d9e1;
+}
+
+.dot.salida {
+    background: #dff0e3;
+}
+
+.dot.campamento {
+    background: #dbeefb;
+}
+
+.dot.otro {
+    background: #ece7e4;
+}
+
+.detalle h3 {
+    margin: 0 0 14px;
+    text-transform: capitalize;
+}
+
+.evento {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--borde);
+}
+
+.barra {
+    width: 4px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.info small {
+    color: var(--muted);
+}
+
+.info p {
+    margin: 6px 0 0;
+    font-size: .88rem;
+}
+
+.acciones button {
+    background: none;
+    border: 0;
+    padding: 6px;
+    border-radius: 8px;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.acciones button:hover {
+    background: var(--crema);
+    color: var(--borravino);
+}
+
+.acciones .danger:hover {
+    background: #fdeaea;
+    color: #b3261e;
+}
+
+.acciones svg {
+    width: 16px;
+    height: 16px;
+}
+
+.vacio {
+    color: var(--muted);
+}
+
+.campos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 16px;
+    text-align: left;
+}
+
+.campos label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: .85rem;
+    font-weight: 500;
+}
+
+.campos .full {
+    grid-column: 1 / -1;
+}
+
+.campos input,
+.campos select,
+.campos textarea {
+    padding: 11px 14px;
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    background: var(--crema);
+    font: inherit;
+}
+
+@media (max-width: 900px) {
+    .cal-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .dia {
+        min-height: 56px;
+    }
+
+    .chip {
+        font-size: 0;
+        height: 6px;
+        padding: 0;
+    }
+
+    /* en mobile los chips pasan a ser puntitos */
+}

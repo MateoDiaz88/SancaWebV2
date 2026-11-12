@@ -1,0 +1,149 @@
+<header class="page-head">
+    <div>
+        <h1>Calendario</h1>
+        <p>Reuniones, salidas y campamentos.</p>
+    </div>
+    @if (authService.usuarioLogueado()) {
+    <button class="btn-primary" (click)="nuevo()">
+        <svg lucidePlus></svg>
+        Nuevo evento
+    </button>
+    }
+</header>
+
+@if (error()) { <p class="error-banner" role="alert">{{ error() }}</p> }
+
+<div class="cal-layout">
+    <section class="card cal">
+        <div class="cal-nav">
+            <button class="icon-btn" (click)="anterior()" aria-label="Mes anterior"><svg
+                    lucideChevronLeft></svg></button>
+            <h2>{{ titulo() }}</h2>
+            <button class="icon-btn" (click)="siguiente()" aria-label="Mes siguiente"><svg
+                    lucideChevronRight></svg></button>
+            <button class="btn-ghost" (click)="irAHoy()">Hoy</button>
+        </div>
+
+        <div class="cal-grid" [class.cargando]="cargando()">
+            @for (d of diasSemana; track d) { <span class="dow">{{ d }}</span> }
+
+            @for (c of celdas(); track c.fecha) {
+            <button class="dia" [class.fuera]="!c.delMes" [class.hoy]="c.fecha === hoyIso"
+                [class.sel]="c.fecha === seleccionado()" (click)="seleccionado.set(c.fecha)">
+                <span class="num">{{ c.numero }}</span>
+                @for (e of c.eventos.slice(0, 2); track e.id) {
+                <span class="chip {{ e.tipo }}">{{ e.titulo }}</span>
+                }
+                @if (c.eventos.length > 2) {
+                <span class="mas">+{{ c.eventos.length - 2 }} más</span>
+                }
+            </button>
+            }
+        </div>
+
+        <div class="leyenda">
+            @for (t of tipos; track t.value) {
+            <span><i class="dot {{ t.value }}"></i> {{ t.label }}</span>
+            }
+        </div>
+    </section>
+
+    <aside class="card detalle">
+        <h3>{{ fechaLarga(seleccionado()) }}</h3>
+
+        @for (e of delDia(); track e.id) {
+        <article class="evento">
+            <span class="barra {{ e.tipo }}"></span>
+            <div class="info">
+                <strong>{{ e.titulo }}</strong>
+                <small>{{ cuando(e) }}</small>
+                @if (e.lugar) { <small>{{ e.lugar }}</small> }
+                @if (e.rama) { <span class="badge rama-{{ e.rama }}">{{ e.rama }}</span> }
+                @if (e.descripcion) { <p>{{ e.descripcion }}</p> }
+            </div>
+            @if (puedeEditar(e)) {
+            <div class="acciones">
+                <button title="Editar" (click)="editar(e)">
+                    <svg lucidePencil></svg>
+                </button>
+
+                <button title="Eliminar" class="danger" (click)="eliminar(e)">
+                    <svg lucideTrash2></svg>
+                </button>
+            </div>
+            }
+        </article>
+        } @empty {
+        <p class="vacio">No hay actividades este día.</p>
+        }
+    </aside>
+</div>
+
+@if (modal()) {
+<div class="overlay" (click)="cerrar()">
+    <form class="modal" [formGroup]="form" (ngSubmit)="guardar()" (click)="$event.stopPropagation()" role="dialog"
+        aria-modal="true" aria-labelledby="ev-title">
+        <h3 id="ev-title">{{ editando() ? 'Editar evento' : 'Nuevo evento' }}</h3>
+
+        <div class="campos">
+            <label class="full">Título
+                <input formControlName="titulo" placeholder="Ej: Reunión de Manada" />
+                @if (form.controls.titulo.touched && form.controls.titulo.invalid) {
+                <small class="error">El título es obligatorio.</small>
+                }
+            </label>
+
+            <label>Tipo
+                <select formControlName="tipo">
+                    @for (t of tipos; track t.value) { <option [value]="t.value">{{ t.label }}</option> }
+                </select>
+            </label>
+
+            @if (authService.rol() === 'admin') {
+            <label>Rama
+                <select formControlName="rama">
+                    <option value="">Todas las ramas</option>
+                    <option value="manada">Manada</option>
+                    <option value="unidad">Unidad</option>
+                    <option value="caminantes">Caminantes</option>
+                    <option value="rover">Rover</option>
+                </select>
+            </label>
+            } @else {
+            <label>Rama
+                <input [value]="authService.rama()" disabled />
+            </label>
+            }
+
+            <label>Fecha
+                <input type="date" formControlName="fecha" />
+            </label>
+
+            <label>Hasta (opcional)
+                <input type="date" formControlName="fechaFin" />
+            </label>
+
+            <label>Hora (opcional)
+                <input type="time" formControlName="hora" />
+            </label>
+
+            <label>Lugar (opcional)
+                <input formControlName="lugar" />
+            </label>
+
+            <label class="full">Descripción (opcional)
+                <textarea rows="3" formControlName="descripcion"></textarea>
+            </label>
+        </div>
+
+        @if (errorForm()) { <p class="error-banner" role="alert">{{ errorForm() }}</p> }
+
+        <div class="modal-actions">
+            <button type="button" class="btn-ghost" (click)="cerrar()" [disabled]="guardando()">Cancelar</button>
+            <button type="submit" class="btn-primary" [disabled]="guardando()">
+                {{ guardando() ? 'Guardando...' : 'Guardar' }}
+            </button>
+        </div>
+    </form>
+</div>
+}

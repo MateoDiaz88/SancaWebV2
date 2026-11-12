@@ -74,6 +74,13 @@
             </small>
             }
         </label>
+        
+        @if (pideIngreso()) {
+        <label>Fecha de ingreso
+            <input type="date" formControlName="fechaIngreso" [max]="max" />
+            <small class="hint">Las cuotas anteriores a esta fecha no se cobran.</small>
+        </label>
+        }
     </div>
 
     <div class="form-actions">

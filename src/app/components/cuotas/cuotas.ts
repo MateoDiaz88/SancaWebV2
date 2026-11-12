@@ -24,10 +24,12 @@ const MESES = [
 export class Cuotas {
 
   private hoy = new Date();
-  private cuotasService = inject(CuotasService);
-  notificacionesService = inject(NotificacionService);
+  private cuotasService = inject(CuotasService); // Injeccion del servicio de las cuotas
+  notificacionesService = inject(NotificacionService); // Injeccion del servicio de las notificaciones
+
 
   cuotas = signal<Cuota[]>([]);
+
   config = signal<CuotasConfig[]>([]);
   cargando = signal(true);
   error = signal('');
@@ -45,7 +47,7 @@ export class Cuotas {
 
   constructor() {
     // la config se trae una vez
-    this.cuotasService.listarConfig()
+    this.cuotasService.listarConfig() // funcion del servicio de las cuotas que traer la configuracion de las cuotas(el monto)
       .then(c => this.config.set(c))
       .catch(() => this.error.set('No se pudo cargar la configuración.'));
 
@@ -57,6 +59,8 @@ export class Cuotas {
 
 
   // Último mes que ya debería estar pago
+  // COMPUTED: Es una variable que depende de otra variable para cambiar su estado, es decir que cuando cambia
+  // el valor de la variable independiente,el valor de la variable dependiente tambien cambia
   private mesLimite = computed(() => {
     const y = this.hoy.getFullYear();
     if (this.anio() < y) return 12;
@@ -94,12 +98,24 @@ export class Cuotas {
     }
     return mapa;
   });
-  estadoCuota(id: string, mes: number): 'pagada' | 'debe' | 'futura' {
-    if (this.pagadas().get(id)?.has(mes)) return 'pagada';
+
+  // userId -> mes de ingreso expresado como año*12 + mes
+  private ingresos = computed(() => {
+    const mapa = new Map<string, number>();
+    for (const u of this.usuarios()) {
+      const [y, m] = (u.fechaIngreso ?? '2000-01-01').split('-').map(Number);
+      mapa.set(u.id, y * 12 + m);
+    }
+    return mapa;
+  });
+
+
+  // Sirve para saber el estado actual de las cuotas, es decir si no la pagó(debe), esta paga(pagada), o si todavia no se llegó a ese mes(futura) 
+  estadoCuota(id: string, mes: number): 'pagada' | 'debe' | 'futura' | 'sin' {
+    if (this.pagadas().get(id)?.has(mes)) return 'pagada';      // si ya se cobró, se muestra
+    if (this.anio() * 12 + mes < (this.ingresos().get(id) ?? 0)) return 'sin';
     return mes <= this.mesLimite() ? 'debe' : 'futura';
   }
-
-
 
   adeuda(id: string): number {
     return this.meses.filter(m => this.estadoCuota(id, m.n) === 'debe').length;
@@ -117,7 +133,6 @@ export class Cuotas {
 
 
   // Usa un filter en el que va comprobando varias condiciones, el usuario que pase a esas condiciones, se va a mostrar
-
   filas = computed(() => {
     const q = this.busqueda().toLowerCase().trim();
     return this.protagonistas().filter(u => {
@@ -135,11 +150,14 @@ export class Cuotas {
   conDeuda = computed(() => this.protagonistas().filter(u => this.adeuda(u.id) > 0).length);
   alDia = computed(() => this.total() - this.conDeuda());
 
+
+  // Cambio de estado de la cuota, es decir de pasar de debe a pagada o viceversa
   async toggle(userId: string, month: number) {
     if (this.sinConfig()) return;
+    if (this.estadoCuota(userId, month) === 'sin') return;
 
     const year = this.anio();
-    const monto = this.montoAnual();
+    const monto = this.montoAnual()
     const anterior = this.cuotas();
     const existente = anterior.find(
       c => c.userId === userId && c.year === year && c.month === month,
@@ -148,6 +166,7 @@ export class Cuotas {
     const hoy = new Date().toISOString().split('T')[0];
 
     // 1. cambio inmediato en pantalla
+    // Primero cambia el valor a nivel vista por mas que no se haya actualizado a nivel back el valor, en el caso de que ocurra algun error, revierte el valor inmediatamente
     if (!existente) {
       this.cuotas.update(l => [
         ...l,
@@ -167,7 +186,7 @@ export class Cuotas {
         await this.cuotasService.marcarImpaga(userId, year, month);
         this.notificacionesService.exito("¡Cuota pagada!", "Se cambió el estado de la cuota.")
       } else {
-       await this.cuotasService.marcarPaga(userId, year, month, monto);
+        await this.cuotasService.marcarPaga(userId, year, month, monto);
         this.notificacionesService.exito("Exito", "Se cambió el estado de cuota.")
       }
     } catch {

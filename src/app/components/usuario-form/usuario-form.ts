@@ -42,6 +42,7 @@ export class UsuarioForm {
     return null;
   };
 
+  hoy = new Date().toISOString().split('T')[0];
 
 
   form = this.fb.nonNullable.group({
@@ -50,6 +51,7 @@ export class UsuarioForm {
     apellido: ['', Validators.required],
     email: ["", [Validators.required, Validators.email]],
     fechaNacimiento: ['', [Validators.required, this.fechaValida]],
+    fechaIngreso: [this.hoy, Validators.required],
     rol: ['protagonista' as Usuario['rol'], Validators.required],
     rama: [null as Rama | null],
     password: [''],
@@ -67,6 +69,7 @@ export class UsuarioForm {
     this.rol() === 'educador' ? 'Rama a cargo' : 'Rama'
   );
 
+  pideIngreso = computed(() => this.rol() === 'protagonista');  
 
   constructor() {
     this.form.controls.fechaNacimiento.valueChanges
@@ -83,11 +86,11 @@ export class UsuarioForm {
       const pass = this.form.controls.password;
 
       if (u) {
-        this.form.reset({ dni: u.dni, nombre: u.nombre, apellido: u.apellido, rol: u.rol, password: '', email: u.email, fechaNacimiento: u.fechaNacimiento, rama: u.rama });
+        this.form.reset({ dni: u.dni, nombre: u.nombre, apellido: u.apellido, rol: u.rol, password: '', email: u.email, fechaNacimiento: u.fechaNacimiento, rama: u.rama, fechaIngreso: u.fechaIngreso });
         this.form.controls.dni.disable();               // el DNI no se edita
         pass.setValidators([Validators.minLength(6)]);  // opcional al editar
       } else {
-        this.form.reset({ rol: 'protagonista' });
+        this.form.reset({ rol: 'protagonista' , fechaIngreso: this.hoy});
         this.form.controls.dni.enable();
         pass.setValidators([Validators.required, Validators.minLength(6)]);
       }
