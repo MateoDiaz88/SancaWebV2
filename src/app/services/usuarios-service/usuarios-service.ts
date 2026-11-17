@@ -3,6 +3,7 @@ import { UsuarioFormValue } from '../../components/usuario-form/usuario-form';
 import { SupabaseService } from '../supabase-service/supabase-service';
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { Usuario } from '../../entitys/usuario.interface';
+import { Evento } from '../../entitys/evento.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -30,10 +31,10 @@ export class UsuariosService {
     return data!;
   }
 
-  async cargarUsuarios(): Promise<Usuario[]>{
-    const {data, error} = await this.supabase.from("perfiles").select("*");
+  async cargarUsuarios(): Promise<Usuario[]> {
+    const { data, error } = await this.supabase.from("perfiles").select("*");
 
-    if(error){
+    if (error) {
       throw error;
     }
 
@@ -41,13 +42,18 @@ export class UsuariosService {
 
   }
 
-  async desactivarUsuario(id: string){
-    const {error} = await this.supabase.from("perfiles")
-      .update({"activo": false})
+  async desactivarUsuario(id: string) {
+    const { error } = await this.supabase.from("perfiles")
+      .update({ "activo": false })
       .eq("id", id);
 
-    if(error){
+    if (error) {
       throw error;
     }
   }
+
+
+
+  
 }
+

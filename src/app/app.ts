@@ -13,7 +13,7 @@ import { NotificacionModal } from './shared/notificacion-modal/notificacion-moda
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements OnInit{
+export class App{
   protected readonly title = signal('sanca-web');
 
   private router = inject(Router);
@@ -29,11 +29,9 @@ export class App implements OnInit{
 
   mostrarNav = computed(() => {
   const u = this.url();
-  return !u.startsWith('/admin') && !u.startsWith('/login');
+  return !u.startsWith('/admin') && !u.startsWith('/login') && !u.startsWith("/inicio");
 });
 
 
-  async ngOnInit() {
-    await this.authService.inicializarAuth();
-  }
+  
 } 

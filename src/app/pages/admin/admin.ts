@@ -1,19 +1,19 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { LucideBan, LucideCalendar, LucideDollarSign, LucideHouse, LucideLogOut, LucidePencil, LucideSearch, LucideUserPlus, LucideUsers, LucideWallet } from '@lucide/angular';
+import { Router } from '@angular/router';
+import { LucideBan, LucideCalendar, LucideDollarSign, LucideHouse, LucideLogOut, LucideMegaphone, LucidePencil, LucideSearch, LucideUserPlus, LucideUsers, LucideWallet } from '@lucide/angular';
 import { Usuario } from '../../entitys/usuario.interface';
 import { UsuarioForm, UsuarioFormValue } from '../../components/usuario-form/usuario-form';
 import { Cuotas } from '../../components/cuotas/cuotas';
 import { UsuariosService } from '../../services/usuarios-service/usuarios-service';
 import { AuthService } from '../../services/auth-service/auth-service';
-import { Spinner } from '../../shared/spinner/spinner';
 import { Calendario } from '../../components/calendario/calendario';
+import { Avisos } from '../../components/avisos/avisos';
 
 
 @Component({
   selector: 'app-admin',
-  imports: [ReactiveFormsModule,LucideCalendar, LucideWallet, LucideSearch, LucideUsers, LucideUserPlus, LucideLogOut, LucidePencil, LucideHouse, LucideDollarSign, UsuarioForm, Cuotas, LucideBan, Calendario],
+  imports: [ReactiveFormsModule,LucideMegaphone,LucideCalendar, LucideWallet, LucideSearch, LucideUsers, LucideUserPlus, LucideLogOut, LucidePencil, LucideHouse, LucideDollarSign, UsuarioForm, Cuotas, LucideBan, Calendario, Avisos],
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
@@ -34,7 +34,7 @@ export class Admin implements OnInit {
   // SIGNAL = Es un primitivo reactivo que actua como un contenedor de un valor que notifica a sus consumidores cuando dicho valor es modificado
   // Es decir que es reactiva. Angular sabe exactamente en que parte del codigo o de la plantilla se usa esta señal.
   // en este caso la uso para navegar por el panel, cuando el usuario toca una opcion en el sidebar, automaticamente cambia el valor del signal y me lleva a la pantalla correspondiente 
-  seccion = signal<'usuarios' | 'form' | "cuotas" | "calendario">('usuarios');
+  seccion = signal<'usuarios' | 'form' | "cuotas" | "calendario" | "avisos">('usuarios');
   
   usuarioEditando = signal<Usuario | null>(null);
   guardando = signal(false);

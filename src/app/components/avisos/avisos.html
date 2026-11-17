@@ -1,0 +1,114 @@
+<article class="card-resumen avisos">
+    <div class="head-article">
+        <svg lucideMegaphone></svg>
+        <span>Avisos del grupo</span>
+
+        @if (esAdmin()) {
+        <button class="btn-agregar" (click)="abrirForm()" aria-label="Agregar aviso">
+            <svg lucidePlus></svg>
+        </button>
+        }
+
+    </div>
+
+    @if (cargando()) {
+    <div class="estado">
+        <span class="spinner"></span>
+        <p>Cargando avisos...</p>
+    </div>
+    } @else if (error()) {
+    <div class="estado error">
+        <p>{{ error() }}</p>
+        <button (click)="cargarAvisos()">Reintentar</button>
+    </div>
+    } @else if (avisos().length) {
+    <ul class="avisos-lista">
+        @for (aviso of avisos(); track aviso.id) {
+        <li [class.importante]="aviso.importante">
+            <div class="aviso-top">
+                <strong>{{ aviso.titulo }}</strong>
+                <span class="aviso-fecha">{{ aviso.created_at | date:'dd/MM' }}</span>
+            </div>
+            <p [class.recortado]="esLargo(aviso)">{{ aviso.texto }}</p>
+            @if (esLargo(aviso)) {
+            <button class="ver-mas" (click)="abrir(aviso)">Ver más</button>
+            }
+            @if (aviso.rama) {
+            <span class="aviso-rama" [ngClass]="'rama-' + aviso.rama">{{ aviso.rama }}</span>
+            }
+        </li>
+        }
+    </ul>
+    } @else {
+    <div class="sin-avisos">
+        <svg lucideHeart></svg>
+        <p>No hay avisos por ahora</p>
+    </div>
+    }
+</article>
+
+@if (avisoSeleccionado(); as aviso) {
+<div class="overlay" (click)="cerrar()">
+    <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+        <button class="cerrar" (click)="cerrar()" aria-label="Cerrar">
+            <svg lucideX></svg>
+        </button>
+
+        <span class="aviso-fecha">{{ aviso.created_at | date:'dd/MM/yyyy' }}</span>
+        <h3>{{ aviso.titulo }}</h3>
+        <p>{{ aviso.texto }}</p>
+
+        @if (aviso.rama) {
+        <span class="aviso-rama" [ngClass]="'rama-' + aviso.rama">{{ aviso.rama }}</span>
+        }
+    </div>
+</div>
+}
+
+@if (formAbierto()) {
+<div class="overlay" (click)="cerrarForm()">
+    <div class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+        <button class="cerrar" (click)="cerrarForm()" aria-label="Cerrar">
+            <svg lucideX></svg>
+        </button>
+
+        <h3>Nuevo aviso</h3>
+
+        <label class="campo">
+            <span>Título</span>
+            <input type="text" maxlength="80" [value]="titulo()" (input)="titulo.set($any($event.target).value)" />
+        </label>
+
+        <label class="campo">
+            <span>Texto</span>
+            <textarea rows="6" [value]="texto()" (input)="texto.set($any($event.target).value)"></textarea>
+        </label>
+
+        <label class="campo">
+            <span>Para quién</span>
+            <select [value]="rama()" (change)="rama.set($any($event.target).value)">
+                <option value="">Todo el grupo</option>
+                @for (r of ramas; track r) {
+                <option [value]="r">{{ r }}</option>
+                }
+            </select>
+        </label>
+
+        <label class="check">
+            <input type="checkbox" [checked]="importante()" (change)="importante.set($any($event.target).checked)" />
+            Marcar como importante
+        </label>
+
+        @if (errorForm()) {
+        <p class="error-form">{{ errorForm() }}</p>
+        }
+
+        <div class="acciones">
+            <button class="btn-secundario" (click)="cerrarForm()">Cancelar</button>
+            <button class="btn-primario" (click)="guardar()" [disabled]="!formValido() || guardando()">
+                {{ guardando() ? 'Guardando...' : 'Publicar' }}
+            </button>
+        </div>
+    </div>
+</div>
+}

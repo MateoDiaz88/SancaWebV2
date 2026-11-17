@@ -14,7 +14,9 @@ export class AuthService {
   usuarioLogueado = signal(false);
   rol = signal<RolUsuario | null>(null);
   rama = signal<string | null>(null);
-  idUsuario = signal<string|null>(null)
+  idUsuario = signal<string | null>(null);
+  nombre = signal<string | null>(null);
+  apellido = signal<string | null>(null)
   cargandoAuth = signal(true);
 
   async login(dni: string, password: string) {
@@ -58,25 +60,19 @@ export class AuthService {
       await this.supabase.auth.getUser();
 
     if (error || !user?.email) {
-      this.usuarioLogueado.set(false);
-      this.rol.set(null);
-      this.rama.set(null)
-      this.idUsuario.set(null)
+      this.limpiarPerfil();
       return;
     }
 
     const { data: perfil, error: errorPerfil } =
       await this.supabase
         .from('perfiles')
-        .select('id, rol, rama,activo')
+        .select('id, rol, rama,activo, nombre, apellido')
         .eq('email', user.email)
         .maybeSingle();
 
-    if (errorPerfil || !perfil || !perfil.activo) {
-      this.usuarioLogueado.set(false);
-      this.rol.set(null);
-      this.rama.set(null)
-      this.idUsuario.set(null)
+    if (errorPerfil || !perfil || !perfil.activo || !perfil.nombre || !perfil.apellido) {
+      this.limpiarPerfil();
       return;
     }
 
@@ -84,6 +80,8 @@ export class AuthService {
     this.rol.set(perfil.rol as RolUsuario);
     this.rama.set(perfil.rama);
     this.idUsuario.set(perfil.id)
+    this.nombre.set(perfil.nombre);
+    this.apellido.set(perfil.apellido);
   }
 
   async inicializarAuth() {
@@ -91,8 +89,21 @@ export class AuthService {
 
     try {
       await this.cargarPerfil();
+    } catch (error) {
+      console.error('Error al inicializar autenticación:', error);
+      this.limpiarPerfil();
     } finally {
       this.cargandoAuth.set(false);
     }
   }
+
+  private limpiarPerfil() {
+    this.usuarioLogueado.set(false);
+    this.rol.set(null);
+    this.rama.set(null);
+    this.idUsuario.set(null);
+    this.nombre.set(null);
+    this.apellido.set(null);
+  }
+
 }

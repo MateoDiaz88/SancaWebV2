@@ -20,6 +20,11 @@
                 <svg lucideCalendar></svg> Calendario
             </button>
 
+            <button [class.active]="seccion()=== 'avisos'" (click)="seccion.set('avisos')">
+                <svg lucideMegaphone></svg> Avisos
+
+            </button>
+
         </nav>
 
         <div class="sidebar-footer">
@@ -159,6 +164,11 @@
 
         @if (seccion() === 'calendario') {
         <app-calendario />
+        }
+
+        @if(seccion() === 'avisos'){
+
+            <app-avisos></app-avisos>
         }
 
     </main>

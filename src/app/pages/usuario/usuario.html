@@ -1,1 +1,106 @@
-<p>usuario works!</p>
+<div class="panel">
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="assets/img/logo.jpg" alt="SanCa" />
+            <span>SanCa <small>Panel</small></span>
+        </div>
+
+        <nav>
+            <button [class.active]="seccion() === 'inicio'" (click)="seccion.set('inicio')">
+                <svg lucideHouse></svg> Inicio
+            </button>
+
+            <button [class.active]="seccion() === 'cuotas'" (click)="seccion.set('cuotas')">
+                <svg lucideWallet></svg> Mis cuotas
+            </button>
+
+            <button [class.active]="seccion() === 'calendario'" (click)="seccion.set('calendario')">
+                <svg lucideCalendar></svg> Calendario
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <button class="logout" (click)="salir()"><svg lucideLogOut></svg>Salir</button>
+            <button class="home" (click)="irAHome()"><svg lucideHouse></svg>Inicio</button>
+        </div>
+    </aside>
+
+    <main class="content">
+        <div class="bienvenida">
+            <div class="bienvenida-head">
+
+                <p>¡Bienvenido!</p>
+                <h2>Hola, {{authService.nombre()}} <svg lucideHeart></svg></h2>
+                @if(authService.rol() === "protagonista"){
+                <span class="badge" [ngClass]="'rama-' + authService.rama()">{{authService.rama()}}</span>
+                } @else{
+                <span class="badge" [ngClass]="'rol-' + authService.rol()">{{authService.rol()}}</span>
+                }
+            </div>
+
+            <div class="resumen">
+                <article class="card-resumen">
+                    <div class="head-article">
+                        <svg lucideCalendar></svg>
+                        <span>Próximo evento</span>
+                    </div>
+                    <div class="event-container">
+                        <div class="date-evento">
+                            <p>{{mesProxEvento()}}</p>
+                            <p>{{numeroProxEvento()}}</p>
+                        </div>
+                        <div class="details-event">
+                            <strong>{{proxEvento()?.titulo}}</strong>
+                            <span>{{proxEvento()?.lugar}}</span>
+                            <span>{{ proxEvento()?.hora?.slice(0, 5) }} hs</span>
+                        </div>
+
+                        <button class="btn-event" (click)="seccion.set('calendario')">
+                            >
+                        </button>
+                    </div>
+
+                </article>
+                <article class="card-resumen cuota-card">
+                    <div class="head-article">
+                        <svg lucideDollarSign></svg>
+                        <span>Próxima cuota a pagar</span>
+                    </div>
+
+                    @if (proxCuota(); as cuota) {
+                    <div class="cuota-info">
+                        <div class="cuota-periodo">
+                            <span class="mes">
+                                {{ meses[cuota.month - 1] }}
+                            </span>
+                            <span class="anio">{{ cuota.year }}</span>
+                        </div>
+
+                        <div class="cuota-detalle">
+                            @if (importeActual() !== null) {
+                            <strong>{{ formatearImporte(importeActual()) }}</strong>
+                            } @else {
+                            <strong>Importe no disponible</strong>
+                            }
+
+                            <span class="estado-pendiente">
+                                <span class="punto"></span>
+                                Pendiente de pago
+                            </span>
+                        </div>
+                    </div>
+                    } @else {
+                    <div class="sin-cuota">
+                        <svg lucideHeart></svg>
+                        <p>¡Estás al día con tus cuotas!</p>
+                    </div>
+                    }
+                </article>
+            </div>
+
+            <app-avisos></app-avisos>
+        </div>
+    </main>
+</div>

@@ -59,5 +59,43 @@ export class CuotasService {
       .eq('user_id', userId).eq('year', year).eq('month', month);
     if (error) throw error;
   }
+
+  async obtenerUltimaCuota(idUsuario: string) {
+    const añoActual = new Date().getFullYear();
+
+
+
+    const { data, error } = await this.client
+      .from('cuotas')
+      .select('*')
+      .eq('user_id', idUsuario)
+      .eq('year', añoActual)
+      .eq('paid', false)
+      .order('month', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error al obtener cuota:', error);
+      throw error;
+    }
+
+    return data;
+
+
+
+
+  }
+
+  async obtenerConfiguracionCuota() {
+    const { data, error } = await this.client
+      .from('cuotas_config')
+      .select('*')
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  }
 }
 

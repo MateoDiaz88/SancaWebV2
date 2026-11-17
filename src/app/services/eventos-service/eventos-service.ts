@@ -51,4 +51,34 @@ export class EventosService {
   }
 
 
+  async obtenerProximoEvento(
+    rama: string | null,
+    rol: string | null
+  ): Promise<Evento | null> {
+
+    const hoy = new Date().toISOString().split('T')[0];
+    console.log("EJECUTANDO FUNCION")
+
+    let query = this.client
+      .from('eventos')
+      .select('*')
+      .gte('fecha_fin', hoy);
+
+    // Si no es administrador, filtra por su rama
+    if (rol !== 'admin') {
+      if (!rama) return null;
+
+      query = query.or(`rama.eq.${rama},rama.is.null`);
+    }
+
+    const { data, error } = await query
+      .order('fecha', { ascending: true })
+      .order('hora', { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return data as Evento | null;
+  }
 }
